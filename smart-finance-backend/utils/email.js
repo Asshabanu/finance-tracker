@@ -8,12 +8,15 @@ const sendEmail = async (options) => {
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
+    },
+    tls: {
+      rejectUnauthorized: false
     }
   });
 
   // 2) Define the email options
   const mailOptions = {
-    from: 'Smart Finance Tracker <noreply@smartfinance.com>',
+    from: `Smart Finance Tracker <${process.env.EMAIL_USER}>`,
     to: options.email,
     subject: options.subject,
     text: options.message,
