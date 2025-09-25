@@ -2,20 +2,24 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
-const path = require('path');
 
 // Load environment variables
 dotenv.config();
 
-// Connect to database
-connectDB();
+// Connect to MongoDB
+connectDB(process.env.MONGODB_URI);
 
 // Initialize express app
 const app = express();
 
-// Enable CORS for all origins (for development)
+// Enable CORS for local development and deployed frontend
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://your-frontend-url.vercel.app' // Replace with your deployed frontend URL
+];
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-frontend-url.vercel.app'],
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -25,7 +29,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Define routes
+// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/transactions', require('./routes/transactions'));
 app.use('/api/categories', require('./routes/categories'));
